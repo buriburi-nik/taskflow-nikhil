@@ -1,56 +1,55 @@
 import toast, { resolveValue } from 'react-hot-toast'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { AlertCircle, CheckCircle2, Info, X } from 'lucide-react'
 
 export default function RetroToast({ t }) {
   const isError   = t.type === 'error'
   const isSuccess = t.type === 'success'
   
-  let color = 'var(--purple)'
+  let color = 'var(--val-dark)'
   let label = 'SYSTEM MESSAGE'
   let Icon  = Info
 
   if (isError) {
-    color = 'var(--pink)'
+    color = 'var(--val-red)'
     label = 'ERROR DETECTED'
     Icon  = AlertCircle
   } else if (isSuccess) {
-    color = 'var(--green)'
-    label = 'SUCCESS'
+    color = 'var(--val-gray)'
+    label = 'PROTOCOL SUCCESS' // success tone
     Icon  = CheckCircle2
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12, scale: 0.95 }}
-      animate={{ opacity: t.visible ? 1 : 0, y: t.visible ? 0 : 12, scale: t.visible ? 1 : 0.95 }}
-      className="retro-window"
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: t.visible ? 1 : 0, x: t.visible ? 0 : 40 }}
+      className="val-card"
       style={{
         width: '100%',
-        maxWidth: '320px',
+        maxWidth: '360px',
         pointerEvents: 'auto',
-        marginBottom: '8px',
+        marginBottom: '12px',
+        padding: 0,
+        border: 'none',
+        boxShadow: `4px 4px 0 ${color}`
       }}
     >
-      <div className="retro-window-bar" style={{ background: color, padding: '3px 8px', height: 'auto' }}>
-        <div className="retro-window-dots">
-          <span style={{ background: 'rgba(255,255,255,0.4)', width: '8px', height: '8px' }} />
-          <span style={{ background: 'rgba(255,255,255,0.2)', width: '8px', height: '8px' }} />
-        </div>
-        <span style={{ fontSize: '10px', fontWeight: 700 }}>{label}</span>
+      <div style={{ background: color, padding: '8px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontFamily: 'Anton', fontSize: '14px', color: 'white', letterSpacing: '0.05em' }}>{label}</span>
         <button
           onClick={() => toast.dismiss(t.id)}
-          style={{ marginLeft: 'auto', background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', padding: 0 }}
         >
-          <X size={12} strokeWidth={3} />
+          <X size={14} strokeWidth={3} />
         </button>
       </div>
 
-      <div style={{ padding: '12px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-        <div style={{ color }}>
-          <Icon size={18} />
+      <div style={{ background: 'var(--val-light)', padding: '16px', display: 'flex', alignItems: 'flex-start', gap: '12px', borderLeft: `4px solid ${color}`, borderRight: `2px solid var(--val-dark)`, borderBottom: `2px solid var(--val-dark)` }}>
+        <div style={{ color, marginTop: '2px' }}>
+          <Icon size={20} />
         </div>
-        <div style={{ fontSize: '12px', fontWeight: 700, lineHeight: 1.4, color: 'var(--dark)' }}>
+        <div style={{ fontFamily: 'Rajdhani', fontSize: '16px', fontWeight: 600, lineHeight: 1.4, color: 'var(--val-dark)' }}>
           {resolveValue(t.message, t)}
         </div>
       </div>

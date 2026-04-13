@@ -28,9 +28,6 @@ export default function App() {
 
   return (
     <BrowserRouter>
-
-      <div className="crt-scanlines" aria-hidden="true" />
-
       <CommandPalette />
 
       <Toaster position="top-right" gutter={8}>

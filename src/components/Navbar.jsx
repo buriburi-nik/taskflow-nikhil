@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-  Terminal, Home, LogOut, User, ChevronDown, ChevronUp, Layout, Menu
+  Terminal, Home, LogOut, User, ChevronDown, ChevronUp, Layout
 } from 'lucide-react'
 import useAuthStore from '../store/authStore.js'
 import ThemeToggle from './ThemeToggle.jsx'
@@ -18,20 +18,18 @@ export default function Navbar({ projectName }) {
   }
 
   return (
-    <div className="retro-menubar">
+    <div className="val-navbar">
       {/* Logo */}
-      <Link to="/" className="retro-menubar-item" style={{ fontFamily: 'VT323', fontSize: '18px', letterSpacing: '0.1em', borderRight: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <Terminal size={18} /> TASKFLOW
+      <Link to="/" className="val-nav-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingLeft: 0, color: 'var(--val-red)' }}>
+        <Terminal size={28} /> <span style={{ paddingTop: '4px' }}>TASKFLOW</span>
       </Link>
-
-
 
       {projectName && (
         <span
-          className="retro-menubar-item"
-          style={{ color: 'var(--yellow)', borderLeft: '1px solid rgba(255,255,255,0.2)', fontFamily: 'VT323', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '4px', overflow: 'hidden', whiteSpace: 'nowrap' }}
+          className="val-nav-item hidden-mobile"
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', borderLeft: '2px solid var(--val-gray)' }}
         >
-          / <Layout size={14} /> <span className="hidden-mobile">{projectName.toUpperCase()}</span>
+          <Layout size={20} /> <span style={{ paddingTop: '4px' }}>{projectName.toUpperCase()}</span>
         </span>
       )}
 
@@ -41,58 +39,58 @@ export default function Navbar({ projectName }) {
       <ThemeToggle />
 
       {/* User */}
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', height: '100%', display: 'flex', alignItems: 'center' }}>
         <button
           onClick={() => setUserMenuOpen(o => !o)}
-          className="retro-menubar-item"
-          style={{ gap: '8px', display: 'flex', alignItems: 'center', borderRight: 'none' }}
+          className="val-nav-item"
+          style={{ gap: '12px', display: 'flex', alignItems: 'center', border: 'none', background: 'transparent', cursor: 'pointer', paddingRight: 0 }}
         >
-          <div style={{ width: '20px', height: '20px', borderRadius: '2px', background: 'var(--purple)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={14} color="white" />
+          <div style={{ width: '32px', height: '32px', background: 'var(--val-red)', display: 'flex', alignItems: 'center', justifyContent: 'center', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 8px 100%, 0 calc(100% - 8px))' }}>
+            <User size={18} color="white" />
           </div>
-          <span style={{ fontFamily: 'Space Mono', fontWeight: 700 }} className="hidden-mobile">
-            {user?.name?.toUpperCase() || 'USER'}
+          <span style={{ fontFamily: 'Rajdhani', fontWeight: 700, fontSize: '18px', paddingTop: '2px' }} className="hidden-mobile">
+            {user?.name?.toUpperCase() || 'OPERATIVE'}
           </span>
-          {userMenuOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+          {userMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
 
         <AnimatePresence>
           {userMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -4 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.1 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
               style={{
                 position: 'absolute',
-                top: '100%',
+                top: 'calc(100% + 4px)',
                 right: 0,
-                minWidth: '200px',
-                background: 'var(--white)',
-                border: '2px solid var(--dark)',
-                boxShadow: '4px 4px 0 var(--dark)',
+                minWidth: '240px',
+                background: 'var(--val-light)',
+                border: '2px solid var(--val-dark)',
                 zIndex: 200,
+                clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)'
               }}
             >
-              <div style={{ padding: '10px 12px', borderBottom: '1px solid var(--dark)', fontSize: '10px', color: 'var(--purple)', fontWeight: 700, letterSpacing: '0.05em', background: 'rgba(28,20,34,0.03)' }}>
-                LOGIN: {user?.email}
+              <div style={{ padding: '16px', borderBottom: '2px solid var(--val-bg)', fontFamily: 'Rajdhani', fontSize: '14px', color: 'var(--val-gray)', fontWeight: 600 }}>
+                ID: {user?.email}
               </div>
               <Link
                 to="/"
                 onClick={() => setUserMenuOpen(false)}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--dark)', textTransform: 'uppercase', transition: 'background 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'var(--yellow)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', fontSize: '16px', fontFamily: 'Anton', color: 'var(--val-dark)', textDecoration: 'none', transition: 'background 0.2s, color 0.2s', letterSpacing: '0.05em' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--val-dark)'; e.currentTarget.style.color = 'var(--val-bg)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--val-dark)'; }}
               >
-                <Home size={14} /> DASHBOARD
+                <Home size={18} /> COMMAND CENTER
               </Link>
               <button
                 onClick={handleLogout}
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', fontSize: '12px', fontWeight: 700, letterSpacing: '0.08em', color: 'var(--pink)', textTransform: 'uppercase', width: '100%', background: 'transparent', border: 'none', borderTop: '1px solid var(--dark)', textAlign: 'left', cursor: 'pointer', transition: 'background 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(232,71,158,0.1)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', fontSize: '16px', fontFamily: 'Anton', color: 'var(--val-red)', width: '100%', background: 'transparent', border: 'none', borderTop: '2px solid var(--val-bg)', textAlign: 'left', cursor: 'pointer', transition: 'background 0.2s, color 0.2s', letterSpacing: '0.05em' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--val-red)'; e.currentTarget.style.color = 'white'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--val-red)'; }}
               >
-                <LogOut size={14} /> SIGN OUT
+                <LogOut size={18} /> DISCONNECT
               </button>
             </motion.div>
           )}

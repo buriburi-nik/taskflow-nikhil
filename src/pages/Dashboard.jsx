@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
-import { Folder, Clock, CheckCircle2, FolderX, FolderPlus, LayoutDashboard, Search, List, Activity } from 'lucide-react'
+import { Folder, Clock, CheckCircle2, FolderX, FolderPlus, LayoutDashboard, Search, List, Activity, Home, Menu } from 'lucide-react'
 import useProjectStore from '../store/projectStore.js'
 import useAuthStore from '../store/authStore.js'
 import Navbar from '../components/Navbar.jsx'
@@ -34,8 +34,7 @@ function CreateModal({ isOpen, onClose, onCreate }) {
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="cmd-overlay"
-          style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
+          style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
           onClick={onClose}
         >
           <motion.div
@@ -44,50 +43,45 @@ function CreateModal({ isOpen, onClose, onCreate }) {
             exit={{ scale: 0.95, y: 16 }}
             transition={{ duration: 0.15 }}
             onClick={e => e.stopPropagation()}
-            className="retro-window"
-            style={{ width: '100%', maxWidth: '420px' }}
+            className="val-card"
+            style={{ width: '100%', maxWidth: '420px', padding: 0 }}
           >
-            <div className="retro-window-bar">
-              <div className="retro-window-dots">
-                <span style={{ background: '#ff6b6b' }} />
-                <span style={{ background: '#ffd93d' }} />
-                <span style={{ background: '#6bcb77' }} />
-              </div>
-              NEW PROJECT — TASKFLOW
+            <div style={{ background: 'var(--val-dark)', color: 'white', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'Anton', fontSize: '24px', letterSpacing: '0.05em' }}>INITIATE PROJECT</span>
               <button
                 onClick={onClose}
-                style={{ marginLeft: 'auto', background: 'var(--pink)', border: '1px solid rgba(255,255,255,0.5)', color: 'white', width: '18px', height: '16px', fontSize: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}
+                style={{ background: 'var(--val-red)', border: 'none', color: 'white', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Anton', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 4px 100%, 0 calc(100% - 4px))' }}
               >
                 ×
               </button>
             </div>
 
-            <div style={{ padding: '20px' }}>
-              <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ padding: '24px' }}>
+              <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div>
-                  <label className="retro-label">Project name *</label>
+                  <label className="val-label">PROJECT NAME</label>
                   <input
                     autoFocus
-                    placeholder="e.g. WEBSITE REDESIGN"
-                    className={`retro-input ${errors.name ? 'error' : ''}`}
-                    {...register('name', { required: 'Project name required' })}
+                    placeholder="E.G. REDESIGN PROTOCOL"
+                    className={`val-input ${errors.name ? 'error' : ''}`}
+                    {...register('name', { required: 'REQUIRED' })}
                   />
-                  {errors.name && <p style={{ fontSize: '11px', color: 'var(--pink)', marginTop: '3px', fontWeight: 700 }}>{errors.name.message}</p>}
+                  {errors.name && <p style={{ fontSize: '14px', color: 'var(--val-red)', marginTop: '6px', fontWeight: 700 }}>{errors.name.message}</p>}
                 </div>
                 <div>
-                  <label className="retro-label">Description</label>
+                  <label className="val-label">DESCRIPTION</label>
                   <textarea
                     rows={3}
-                    placeholder="What is this project about?"
-                    className="retro-input"
+                    placeholder="DEFINE OBJECTIVES"
+                    className="val-input"
                     style={{ resize: 'vertical' }}
                     {...register('description')}
                   />
                 </div>
-                <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
-                  <button type="button" onClick={onClose} className="btn-retro-ghost" style={{ flex: 1 }}>[ CANCEL ]</button>
-                  <button type="submit" disabled={isSubmitting} className="btn-retro btn-retro-green" style={{ flex: 1 }}>
-                    {isSubmitting ? '...' : '[ CREATE ]'}
+                <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
+                  <button type="button" onClick={onClose} className="val-btn secondary" style={{ flex: 1, fontSize: '16px' }}>CANCEL</button>
+                  <button type="submit" disabled={isSubmitting} className="val-btn" style={{ flex: 1, fontSize: '16px' }}>
+                    {isSubmitting ? '...' : 'CREATE'}
                   </button>
                 </div>
               </form>
@@ -104,17 +98,17 @@ function CreateModal({ isOpen, onClose, onCreate }) {
 function EmptyState({ onCreate }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', textAlign: 'center' }}>
-      <div style={{ color: 'var(--gray)', marginBottom: '12px' }}>
-        <FolderX size={80} strokeWidth={1} />
+      <div style={{ color: 'var(--val-gray)', marginBottom: '16px' }}>
+        <FolderX size={80} strokeWidth={1.5} />
       </div>
-      <h3 style={{ fontFamily: 'VT323', fontSize: '32px', color: 'var(--dark)', letterSpacing: '0.05em', margin: '0 0 8px' }}>
-        NO PROJECTS FOUND
+      <h3 style={{ fontFamily: 'Anton', fontSize: '40px', color: 'var(--val-dark)', letterSpacing: '0.05em', margin: '0 0 8px' }}>
+        NO PROJECTS DETECTED
       </h3>
-      <p style={{ fontSize: '12px', color: 'var(--dark)', opacity: 0.6, marginBottom: '20px' }}>
-        Create your first project to get started.
+      <p style={{ fontSize: '18px', color: 'var(--val-gray)', marginBottom: '32px', fontFamily: 'Rajdhani', fontWeight: 600 }}>
+        INITIALIZE A NEW PROJECT TO BEGIN.
       </p>
-      <button onClick={onCreate} className="btn-retro btn-retro-green" style={{ fontSize: '14px', padding: '10px 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <FolderPlus size={16} /> NEW PROJECT
+      <button onClick={onCreate} className="val-btn">
+        <FolderPlus size={20} /> NEW PROJECT
       </button>
     </div>
   )
@@ -157,80 +151,77 @@ export default function Dashboard() {
   const completed = allTasks.filter(t => t.status === 'done').length
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--cream)', backgroundImage: 'radial-gradient(rgba(28,20,34,0.1) 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}>
-      {/* Menu bar */}
-      <Navbar />
-
-      {/* Toolbar */}
-      <div className="retro-toolbar" style={{ marginTop: '28px' }}>
-        <button onClick={() => setModalOpen(true)} className="retro-toolbar-btn">&#x2795; NEW PROJECT</button>
-        <div style={{ width: '1px', height: '18px', background: 'var(--dark)', margin: '0 4px' }} />
-        <span style={{ fontSize: '11px', letterSpacing: '0.05em', color: 'var(--dark)', opacity: 0.6, marginLeft: '4px' }}>
-          {new Date().toDateString().toUpperCase()}
-        </span>
-        <span style={{ marginLeft: 'auto', fontSize: '11px', letterSpacing: '0.05em' }}>
-          CTRL+K — SEARCH
-        </span>
+    <div style={{ minHeight: '100vh', background: 'var(--val-bg)', position: 'relative', overflow: 'hidden' }}>
+      
+      {/* Subtle Cinematic Background Watermark */}
+      <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '60%', height: '120%', opacity: 0.05, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }}>
+        <img src="/agent-bg.png" alt="Agent BG" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'grayscale(100%) blur(4px)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, var(--val-bg), transparent)' }}></div>
       </div>
 
-      <main style={{ padding: '20px 24px', paddingBottom: '40px' }}>
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        <Navbar />
+
+        <main style={{ padding: 'clamp(20px, 4vw, 40px)', maxWidth: '1400px', margin: '0 auto' }}>
 
         {/* Page title */}
-        <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <h1 style={{ fontFamily: 'VT323', fontSize: '52px', letterSpacing: '0.04em', lineHeight: 1, color: 'var(--dark)' }}>
-              {user?.name?.toUpperCase() || 'WORKSPACE'}<span className="cursor-blink" />
+            <h1 style={{ fontFamily: 'Anton', fontSize: 'clamp(36px, 8vw, 64px)', letterSpacing: '0.02em', lineHeight: 1, color: 'var(--val-dark)', margin: 0 }}>
+              {user?.name?.toUpperCase() || 'WORKSPACE'}
             </h1>
-            <p style={{ fontSize: '11px', letterSpacing: '0.1em', color: 'var(--dark)', opacity: 0.6, marginTop: '4px' }}>
-              &gt; {projects.length} PROJECT(S) · {allTasks.length} TASK(S) TOTAL
+            <p style={{ fontSize: '18px', fontFamily: 'Rajdhani', fontWeight: 700, color: 'var(--val-red)', letterSpacing: '0.1em', marginTop: '8px', margin: 0 }}>
+              // {projects.length} PROJECTS · {allTasks.length} TASKS TOTAL
             </p>
           </div>
 
-          <button onClick={() => setModalOpen(true)} className="btn-retro btn-retro-purple">
-            &#x2795; NEW PROJECT
+          <button onClick={() => setModalOpen(true)} className="val-btn">
+            <FolderPlus size={20} /> NEW PROJECT
           </button>
         </div>
 
         {/* Stats row */}
         {projects.length > 0 && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '16px', marginBottom: '40px' }}>
             {[
-              { label: 'PROJECTS', value: projects.length, bg: 'var(--purple)', fg: 'white' },
-              { label: 'TOTAL TASKS', value: allTasks.length, bg: 'var(--cream-dark)', fg: 'var(--dark)' },
-              { label: 'IN PROGRESS', value: inProgress, bg: 'var(--yellow)', fg: 'var(--dark)' },
-              { label: 'COMPLETED', value: completed, bg: 'var(--green)', fg: 'white' },
+              { label: 'PROJECTS', value: projects.length, bg: 'var(--val-dark)', fg: 'white' },
+              { label: 'TOTAL TASKS', value: allTasks.length, bg: 'var(--val-bg-alt)', fg: 'var(--val-dark)' },
+              { label: 'IN PROGRESS', value: inProgress, bg: 'var(--val-gray)', fg: 'white' },
+              { label: 'COMPLETED', value: completed, bg: 'var(--val-red)', fg: 'white' },
             ].map(s => (
               <div
                 key={s.label}
                 style={{
-                  border: '2px solid var(--dark)',
-                  boxShadow: '3px 3px 0 var(--dark)',
                   background: s.bg,
-                  padding: '12px 14px',
+                  padding: '24px',
+                  border: '2px solid var(--val-dark)',
+                  clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%)',
+                  position: 'relative'
                 }}
               >
-                <div style={{ fontFamily: 'VT323', fontSize: '44px', color: s.fg, lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.12em', color: s.fg, opacity: 0.8, marginTop: '2px' }}>{s.label}</div>
+                <div style={{ fontFamily: 'Anton', fontSize: 'clamp(32px, 5vw, 48px)', color: s.fg, lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontFamily: 'Rajdhani', fontSize: '16px', fontWeight: 700, letterSpacing: '0.12em', color: s.fg, opacity: 0.9, marginTop: '8px' }}>{s.label}</div>
               </div>
             ))}
           </div>
         )}
 
         {/* Project grid or skeleton/empty */}
-        <div style={{ borderBottom: '2px solid var(--dark)', marginBottom: '16px', paddingBottom: '6px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontFamily: 'VT323', fontSize: '22px', letterSpacing: '0.08em' }}>
-            &#x25A0; PROJECTS ({projects.length})
+        <div style={{ borderBottom: '2px solid var(--val-dark)', marginBottom: '24px', paddingBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontFamily: 'Anton', fontSize: 'clamp(20px, 4vw, 28px)', letterSpacing: '0.05em', color: 'var(--val-dark)' }}>
+            PROJECT DIRECTORY
           </span>
         </div>
 
         {isLoadingProjects ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '24px' }}>
             {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : projects.length === 0 ? (
           <EmptyState onCreate={() => setModalOpen(true)} />
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '24px' }}>
+             {/* We will update ProjectCard child shortly. It will just render whatever it is. */}
             {projects.map((p, i) => (
               <ProjectCard key={p.id} project={p} index={i} onDelete={handleDelete} />
             ))}
@@ -238,23 +229,16 @@ export default function Dashboard() {
         )}
       </main>
 
-      {/* Status bar */}
-      <div className="retro-statusbar">
-        <div className="retro-statusbar-segment">READY</div>
-        <div className="retro-statusbar-segment">{projects.length} PROJECTS</div>
-        <div className="retro-statusbar-segment">{allTasks.length} TASKS</div>
-        <span style={{ marginLeft: 'auto', opacity: 0.6 }}>TASKFLOW v1.0 — NO SERVER REQUIRED</span>
-      </div>
-
       <CreateModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onCreate={handleCreate} />
       
-      <RetroConfirmModal
-        isOpen={confirmOpen}
-        onClose={() => { setConfirmOpen(false); setPendingDeleteId(null) }}
-        onConfirm={confirmDelete}
-        title="Delete Project?"
-        message="Are you sure you want to delete this project and all its tasks? This action cannot be undone."
-      />
+        <RetroConfirmModal
+          isOpen={confirmOpen}
+          onClose={() => { setConfirmOpen(false); setPendingDeleteId(null) }}
+          onConfirm={confirmDelete}
+          title="Delete Project?"
+          message="Are you sure you want to delete this project and all its tasks? This action cannot be undone."
+        />
+      </div>
     </div>
   )
 }

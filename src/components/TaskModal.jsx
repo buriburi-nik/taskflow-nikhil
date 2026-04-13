@@ -57,8 +57,7 @@ export default function TaskModal({ isOpen, onClose, task, projectId, defaultSta
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="cmd-overlay"
-          style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}
+          style={{ position: 'fixed', inset: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(3px)' }}
           onClick={onClose}
         >
           <motion.div
@@ -67,64 +66,57 @@ export default function TaskModal({ isOpen, onClose, task, projectId, defaultSta
             exit={{ scale: 0.95, y: 12 }}
             transition={{ duration: 0.15 }}
             onClick={e => e.stopPropagation()}
-            className="retro-window"
-            style={{ width: '100%', maxWidth: '460px' }}
+            className="val-card"
+            style={{ width: '100%', maxWidth: '480px', padding: 0 }}
           >
-            <div className="retro-window-bar">
-              <div className="retro-window-dots">
-                <span style={{ background: '#ff6b6b' }} />
-                <span style={{ background: '#ffd93d' }} />
-                <span style={{ background: '#6bcb77' }} />
-              </div>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                {editing ? <Edit3 size={14} /> : <Plus size={14} />}
-                {editing ? 'EDIT TASK' : 'NEW TASK'} — TASKFLOW
+            <div style={{ background: 'var(--val-dark)', color: 'white', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontFamily: 'Anton', fontSize: '24px', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {editing ? <Edit3 size={18} /> : <Plus size={18} />}
+                {editing ? 'EDIT TASK' : 'NEW TASK'}
               </span>
               <button
                 onClick={onClose}
-                className="btn-retro-icon"
-                style={{ marginLeft: 'auto', background: 'var(--pink)', color: 'white', width: '20px', height: '18px' }}
+                style={{ background: 'var(--val-red)', border: 'none', color: 'white', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 4px 100%, 0 calc(100% - 4px))' }}
               >
-                <X size={14} strokeWidth={3} />
+                <X size={16} strokeWidth={3} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <form onSubmit={handleSubmit(onSubmit)} style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div>
-                <label className="retro-label"><Type size={12} /> Task title *</label>
+                <label className="val-label"><Type size={14} style={{ display: 'inline-block', verticalAlign: 'text-top' }} /> TASK TITLE</label>
                 <input
                   autoFocus
-                  placeholder="What needs to be done?"
-                  className={`retro-input ${errors.title ? 'error' : ''}`}
-                  {...register('title', { required: 'Title is required' })}
+                  placeholder="EXACTLY WHAT NEEDS TO BE DONE?"
+                  className={`val-input ${errors.title ? 'error' : ''}`}
+                  {...register('title', { required: 'REQUIRED' })}
                 />
-                {errors.title && <p style={{ fontSize: '11px', color: 'var(--pink)', marginTop: '3px', fontWeight: 700 }}>{errors.title.message}</p>}
+                {errors.title && <p style={{ fontSize: '14px', color: 'var(--val-red)', marginTop: '4px', fontWeight: 700 }}>{errors.title.message}</p>}
               </div>
 
               <div>
-                <label className="retro-label"><AlignLeft size={12} /> Description</label>
+                <label className="val-label"><AlignLeft size={14} style={{ display: 'inline-block', verticalAlign: 'text-top' }} /> DESCRIPTION</label>
                 <textarea
                   rows={3}
-                  placeholder="Extra context or notes..."
-                  className="retro-input"
+                  placeholder="ADDITIONAL DIRECTIVES..."
+                  className="val-input"
                   style={{ resize: 'vertical' }}
                   {...register('description')}
                 />
               </div>
 
-              {/* Status + Priority */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
-                  <label className="retro-label"><Activity size={12} /> Status</label>
-                  <select className="retro-input" style={{ appearance: 'none' }} {...register('status')}>
+                  <label className="val-label"><Activity size={14} style={{ display: 'inline-block', verticalAlign: 'text-top' }} /> STATUS</label>
+                  <select className="val-input" {...register('status')}>
                     <option value="todo">TODO</option>
                     <option value="in_progress">IN PROGRESS</option>
                     <option value="done">DONE</option>
                   </select>
                 </div>
                 <div>
-                  <label className="retro-label"><Flag size={12} /> Priority</label>
-                  <select className="retro-input" style={{ appearance: 'none' }} {...register('priority')}>
+                  <label className="val-label"><Flag size={14} style={{ display: 'inline-block', verticalAlign: 'text-top' }} /> PRIORITY</label>
+                  <select className="val-input" {...register('priority')}>
                     <option value="low">LOW</option>
                     <option value="medium">MEDIUM</option>
                     <option value="high">HIGH</option>
@@ -133,21 +125,21 @@ export default function TaskModal({ isOpen, onClose, task, projectId, defaultSta
               </div>
 
               <div>
-                <label className="retro-label"><Calendar size={12} /> Due date</label>
-                <input type="date" className="retro-input" {...register('due_date')} />
+                <label className="val-label"><Calendar size={14} style={{ display: 'inline-block', verticalAlign: 'text-top' }} /> DUE DATE</label>
+                <input type="date" className="val-input" {...register('due_date')} />
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', marginTop: '4px', borderTop: '2px solid var(--dark)', paddingTop: '14px' }}>
-                <button type="button" onClick={onClose} className="btn-retro-ghost" style={{ flex: 1, height: '36px' }}>
-                  [ CANCEL ]
+              <div style={{ display: 'flex', gap: '16px', marginTop: '8px' }}>
+                <button type="button" onClick={onClose} className="val-btn secondary" style={{ flex: 1, fontSize: '16px' }}>
+                  CANCEL
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-retro btn-retro-purple"
-                  style={{ flex: 1, height: '36px', opacity: isSubmitting ? 0.6 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  className="val-btn"
+                  style={{ flex: 1, fontSize: '16px', opacity: isSubmitting ? 0.6 : 1 }}
                 >
-                  {isSubmitting ? 'WORKING...' : editing ? '[ SAVE CHANGES ]' : '[ CREATE TASK ]'}
+                  {isSubmitting ? 'WORKING...' : editing ? 'SAVE CHANGES' : 'CREATE TASK'}
                 </button>
               </div>
             </form>

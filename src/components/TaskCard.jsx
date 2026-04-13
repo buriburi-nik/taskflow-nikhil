@@ -5,9 +5,9 @@ import { format } from 'date-fns'
 import { Edit3, X, Calendar } from 'lucide-react'
 
 const priorityColors = {
-  low:    { bg: 'var(--green)',  fg: 'white',     label: 'LOW'    },
-  medium: { bg: 'var(--yellow)', fg: 'var(--dark)', label: 'MEDIUM' },
-  high:   { bg: 'var(--pink)',   fg: 'white',     label: 'HIGH'   },
+  low:    { bg: 'var(--val-gray)', fg: 'white',        label: 'LOW' },
+  medium: { bg: 'var(--val-dark)', fg: 'var(--val-bg)',label: 'MEDIUM' },
+  high:   { bg: 'var(--val-red)',  fg: 'white',        label: 'HIGH' },
 }
 
 export default function TaskCard({ task, onEdit, onDelete }) {
@@ -16,7 +16,7 @@ export default function TaskCard({ task, onEdit, onDelete }) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity:   isDragging ? 0.4 : 1,
+    opacity:   isDragging ? 0.6 : 1,
     zIndex:    isDragging ? 50 : undefined,
   }
 
@@ -33,85 +33,78 @@ export default function TaskCard({ task, onEdit, onDelete }) {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.15 }}
+        className="val-card"
         style={{
-          border: '2px solid var(--dark)',
-          background: 'var(--white)',
-          boxShadow: isDragging ? '6px 6px 0 var(--dark)' : '2px 2px 0 var(--dark)',
-          transform: isDragging ? 'rotate(2.5deg)' : 'none',
+          boxShadow: isDragging ? '8px 8px 0 rgba(255, 70, 85, 0.15)' : 'none',
+          borderColor: isDragging ? 'var(--val-red)' : 'var(--val-dark)',
+          transform: isDragging ? 'scale(1.02)' : 'none',
           cursor: 'grab',
-          position: 'relative',
           touchAction: 'none',
+          position: 'relative',
+          padding: '16px 16px 16px 20px',
         }}
         {...attributes}
         {...listeners}
       >
         {/* Priority stripe on left edge */}
-        <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: p.bg }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: '6px', background: p.bg }} />
 
-        <div style={{ padding: '10px 10px 10px 14px' }}>
-          {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-            <span
-              className="retro-badge"
-              style={{ background: p.bg, color: p.fg, borderColor: p.bg }}
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '8px' }}>
+          <span style={{ fontFamily: 'Anton', fontSize: '14px', letterSpacing: '0.05em', padding: '2px 8px', background: p.bg, color: p.fg }}>
+            {p.label}
+          </span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onPointerDown={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); onEdit?.(task) }}
+              style={{ padding: '4px', background: 'transparent', border: 'none', color: 'var(--val-dark)', cursor: 'pointer' }}
+              title="Edit"
             >
-              {p.label}
-            </span>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              <button
-                onPointerDown={e => e.stopPropagation()}
-                onClick={e => { e.stopPropagation(); onEdit?.(task) }}
-                style={{ width: '20px', height: '18px', background: 'var(--yellow)', border: '1px solid var(--dark)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                title="Edit"
-              >
-                <Edit3 size={12} />
-              </button>
-              <button
-                onPointerDown={e => e.stopPropagation()}
-                onClick={e => { e.stopPropagation(); onDelete?.(task.id) }}
-                style={{ width: '20px', height: '18px', background: 'var(--pink)', border: '1px solid var(--dark)', fontSize: '11px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                title="Delete"
-              >
-                <X size={12} strokeWidth={3} />
-              </button>
-            </div>
+              <Edit3 size={14} />
+            </button>
+            <button
+              onPointerDown={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); onDelete?.(task.id) }}
+              style={{ padding: '4px', background: 'transparent', border: 'none', color: 'var(--val-red)', cursor: 'pointer' }}
+              title="Delete"
+            >
+              <X size={14} strokeWidth={3} />
+            </button>
           </div>
+        </div>
 
-          {/* Title */}
-          <p style={{ fontWeight: 700, fontSize: '13px', lineHeight: 1.4, marginBottom: '4px', color: 'var(--dark)' }}>
-            {task.title}
+        <p style={{ fontFamily: 'Anton', fontSize: '20px', lineHeight: 1.2, margin: '8px 0', color: 'var(--val-dark)', wordBreak: 'break-word' }}>
+          {task.title.toUpperCase()}
+        </p>
+
+        {task.description && (
+          <p style={{ fontFamily: 'Rajdhani', fontSize: '14px', fontWeight: 600, color: 'var(--val-gray)', margin: '0 0 12px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+            {task.description}
           </p>
+        )}
 
-          {task.description && (
-            <p style={{ fontSize: '11px', lineHeight: 1.6, color: 'var(--dark)', opacity: 0.7, marginBottom: '8px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-              {task.description}
-            </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', paddingTop: '12px', borderTop: '2px solid var(--val-bg-alt)' }}>
+          {task.due_date ? (
+            <span style={{ fontFamily: 'Rajdhani', fontSize: '14px', fontWeight: 700, color: 'var(--val-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Calendar size={12} /> {format(new Date(task.due_date), 'dd MMM').toUpperCase()}
+            </span>
+          ) : <span />}
+
+          {initials && (
+            <span
+              style={{
+                width: '28px', height: '28px',
+                background: 'var(--val-red)',
+                color: 'white',
+                fontFamily: 'Anton', fontSize: '14px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%)'
+              }}
+              title={task.assignee_name}
+            >
+              {initials}
+            </span>
           )}
-
-          {/* Footer */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '6px', borderTop: '1px dashed var(--gray)', marginTop: '4px' }}>
-            {task.due_date ? (
-              <span style={{ fontSize: '10px', letterSpacing: '0.06em', color: 'var(--dark)', opacity: 0.7, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Calendar size={10} /> {format(new Date(task.due_date), 'dd MMM').toUpperCase()}
-              </span>
-            ) : <span />}
-
-            {initials && (
-              <span
-                style={{
-                  width: '22px', height: '22px',
-                  background: 'var(--purple)',
-                  color: 'white',
-                  fontSize: '10px', fontWeight: 700,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: '1px solid var(--dark)',
-                }}
-                title={task.assignee_name}
-              >
-                {initials}
-              </span>
-            )}
-          </div>
         </div>
       </motion.div>
     </div>

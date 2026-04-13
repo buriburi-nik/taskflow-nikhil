@@ -32,8 +32,8 @@ export default function CommandPalette() {
   }, [open])
 
   const commands = [
-    { id: 'home',   label: 'GO TO DASHBOARD', icon: '▶', run: () => navigate('/') },
-    { id: 'logout', label: 'SIGN OUT',         icon: '⊗', run: () => { logout(); navigate('/login') } },
+    { id: 'home',   label: 'COMMAND CENTER', icon: '▶', run: () => navigate('/') },
+    { id: 'logout', label: 'DISCONNECT',      icon: '⊗', run: () => { logout(); navigate('/login') } },
     ...projects.map(p => ({
       id:    `proj-${p.id}`,
       label: p.name.toUpperCase(),
@@ -58,49 +58,40 @@ export default function CommandPalette() {
       {open && (
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="cmd-overlay"
-          style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '80px' }}
+          style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: '100px', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
           onClick={() => setOpen(false)}
         >
           <motion.div
-            initial={{ y: -16, scale: 0.97 }}
+            initial={{ y: -20, scale: 0.98 }}
             animate={{ y: 0, scale: 1 }}
-            exit={{ y: -16, scale: 0.97 }}
-            transition={{ duration: 0.12 }}
+            exit={{ y: -20, scale: 0.98 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             onClick={e => e.stopPropagation()}
-            className="retro-window"
-            style={{ width: '100%', maxWidth: '480px' }}
+            className="val-card"
+            style={{ width: '100%', maxWidth: '600px', padding: 0 }}
           >
-            {/* Title */}
-            <div className="retro-window-bar">
-              <div className="retro-window-dots">
-                <span style={{ background: '#ff6b6b' }} />
-                <span style={{ background: '#ffd93d' }} />
-                <span style={{ background: '#6bcb77' }} />
-              </div>
-              COMMAND PALETTE — CTRL+K
+            <div style={{ background: 'var(--val-red)', padding: '12px 20px', color: 'white', fontFamily: 'Anton', fontSize: '20px', letterSpacing: '0.05em' }}>
+              COMMAND INTERFACE <span style={{ opacity: 0.7, fontSize: '14px', marginLeft: '8px' }}>CTRL+K</span>
             </div>
 
-            {/* Search input */}
-            <div style={{ padding: '10px', borderBottom: '2px solid var(--dark)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontFamily: 'VT323', fontSize: '20px', color: 'var(--purple)' }}>&#x25B7;</span>
+            <div style={{ padding: '16px 20px', borderBottom: '2px solid var(--val-bg)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontFamily: 'Anton', fontSize: '24px', color: 'var(--val-red)' }}>&#x25B7;</span>
               <input
                 ref={inputRef}
                 value={query}
                 onChange={e => { setQuery(e.target.value); setCursor(0) }}
                 onKeyDown={onKeyDown}
-                placeholder="TYPE A COMMAND OR PROJECT NAME..."
-                className="retro-input"
-                style={{ border: 'none', background: 'transparent', padding: '2px 0', fontSize: '13px' }}
+                placeholder="ENTER DIRECTIVE OR SYSTEM NAME..."
+                className="val-input"
+                style={{ border: 'none', background: 'transparent', padding: '0', fontSize: '18px', clipPath: 'none' }}
               />
-              <span className="retro-kbd">ESC</span>
+              <span className="val-key" style={{ marginLeft: 'auto' }}>ESC</span>
             </div>
 
-            {/* Results */}
-            <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
+            <div style={{ maxHeight: '400px', overflowY: 'auto', padding: '8px' }}>
               {filtered.length === 0 ? (
-                <p style={{ padding: '24px', textAlign: 'center', fontSize: '12px', letterSpacing: '0.08em', opacity: 0.5 }}>
-                  NO RESULTS FOR "{query}"
+                <p style={{ padding: '32px', textAlign: 'center', fontFamily: 'Rajdhani', fontSize: '16px', fontWeight: 600, color: 'var(--val-gray)', letterSpacing: '0.05em' }}>
+                  NO DIRECTIVES DETECTED FOR "{query}"
                 </p>
               ) : filtered.map((cmd, i) => (
                 <button
@@ -111,30 +102,30 @@ export default function CommandPalette() {
                     width: '100%',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '10px 14px',
-                    background: i === cursor ? 'var(--purple)' : 'transparent',
-                    color: i === cursor ? 'white' : 'var(--dark)',
-                    borderBottom: '1px solid var(--gray)',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    letterSpacing: '0.08em',
+                    gap: '12px',
+                    padding: '12px 16px',
+                    background: i === cursor ? 'var(--val-dark)' : 'transparent',
+                    color: i === cursor ? 'white' : 'var(--val-dark)',
+                    border: 'none',
+                    fontFamily: 'Anton',
+                    fontSize: '18px',
+                    letterSpacing: '0.05em',
                     textAlign: 'left',
-                    transition: 'background 0.05s',
+                    cursor: 'pointer',
+                    transition: 'background 0.1s, color 0.1s',
                   }}
                 >
-                  <span style={{ fontFamily: 'VT323', fontSize: '18px' }}>{cmd.icon}</span>
+                  <span style={{ fontSize: '20px', width: '24px', textAlign: 'center', color: i === cursor ? 'var(--val-red)' : 'var(--val-gray)' }}>{cmd.icon}</span>
                   {cmd.label}
-                  {i === cursor && <span style={{ marginLeft: 'auto', fontSize: '11px', opacity: 0.7 }}>ENTER ↵</span>}
+                  {i === cursor && <span style={{ marginLeft: 'auto', fontFamily: 'Rajdhani', fontSize: '14px', fontWeight: 700, padding: '2px 6px', background: 'var(--val-red)', color: 'white' }}>ENTER ↵</span>}
                 </button>
               ))}
             </div>
-
-            {/* Footer hints */}
-            <div style={{ padding: '6px 12px', borderTop: '2px solid var(--dark)', background: 'var(--cream-dark)', display: 'flex', gap: '14px', fontSize: '11px', letterSpacing: '0.06em', opacity: 0.7 }}>
+            
+            <div style={{ background: 'var(--val-bg)', padding: '8px 16px', borderTop: '2px solid var(--val-bg-alt)', display: 'flex', gap: '16px', fontFamily: 'Rajdhani', fontSize: '14px', fontWeight: 700, color: 'var(--val-gray)' }}>
               <span>↑↓ NAVIGATE</span>
-              <span>↵ SELECT</span>
-              <span>ESC CLOSE</span>
+              <span>↵ EXECUTE</span>
+              <span>ESC ABORT</span>
             </div>
           </motion.div>
         </motion.div>

@@ -8,7 +8,7 @@ import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-ki
 import toast from 'react-hot-toast'
 import { 
   Plus, Home, Trash2, Filter, User, CheckCircle2, 
-  AlertCircle, Clock, Layout, ChevronDown, ListFilter 
+  AlertCircle, Layout 
 } from 'lucide-react'
 import useProjectStore from '../store/projectStore.js'
 import useAuthStore from '../store/authStore.js'
@@ -19,9 +19,9 @@ import { SkeletonTaskCard } from '../components/Loader.jsx'
 import RetroConfirmModal from '../components/RetroConfirmModal.jsx'
 
 const COLS = [
-  { id: 'todo',        label: 'TODO',        bg: 'var(--cream-dark)',  fg: 'var(--dark)' },
-  { id: 'in_progress', label: 'IN PROGRESS',  bg: 'var(--yellow)',     fg: 'var(--dark)' },
-  { id: 'done',        label: 'DONE',         bg: 'var(--green)',      fg: 'white'       },
+  { id: 'todo',        label: 'TODO',        bg: 'var(--val-gray)' },
+  { id: 'in_progress', label: 'IN PROGRESS', bg: 'var(--val-dark)' },
+  { id: 'done',        label: 'DONE',        bg: 'var(--val-red)' },
 ]
 
 function Column({ col, tasks, onEdit, onDelete, onAdd, loading }) {
@@ -30,25 +30,28 @@ function Column({ col, tasks, onEdit, onDelete, onAdd, loading }) {
   return (
     <div 
       ref={setNodeRef}
-      className={`retro-col ${isOver ? 'over' : ''}`}
       style={{ 
-        background: isOver ? 'rgba(28,20,34,0.05)' : 'transparent',
-        transition: 'background 0.2s'
+        flex: 1,
+        minWidth: 'min(85vw, 320px)',
+        display: 'flex',
+        flexDirection: 'column',
+        background: isOver ? 'var(--val-bg-alt)' : 'transparent',
+        transition: 'background 0.2s',
+        minHeight: '600px',
+        border: '2px solid var(--val-bg-alt)',
       }}
     >
-      {/* Column header */}
-      <div className="retro-col-header" style={{ background: col.bg, borderBottom: '2px solid var(--dark)' }}>
+      <div style={{ background: col.bg, padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '4px solid var(--val-bg)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontFamily: 'VT323', fontSize: '20px', color: col.fg, letterSpacing: '0.06em' }}>
-            &#x25A0; {col.label}
+          <span style={{ fontFamily: 'Anton', fontSize: '24px', color: 'white', letterSpacing: '0.05em' }}>
+             {col.label}
           </span>
           <span
             style={{
-              fontFamily: 'Space Mono', fontSize: '11px', fontWeight: 700,
-              background: 'rgba(28,20,34,0.15)',
-              color: col.fg,
-              padding: '1px 7px',
-              border: '1px solid rgba(28,20,34,0.3)',
+              fontFamily: 'Anton', fontSize: '18px',
+              background: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              padding: '2px 8px',
             }}
           >
             {tasks.length}
@@ -56,22 +59,20 @@ function Column({ col, tasks, onEdit, onDelete, onAdd, loading }) {
         </div>
         <button
           onClick={() => onAdd(col.id)}
-          className="btn-retro-icon"
-          style={{ width: '22px', height: '20px', color: col.fg }}
+          style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           title={`Add to ${col.label}`}
         >
-          <Plus size={14} />
+          <Plus size={24} />
         </button>
       </div>
 
-      {/* Task list */}
-      <div style={{ flex: 1, padding: '10px', display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto', minHeight: '100px' }}>
+      <div style={{ flex: 1, padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto' }}>
         {loading ? (
           Array.from({ length: 2 }).map((_, i) => <SkeletonTaskCard key={i} />)
         ) : tasks.length === 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, padding: '30px 10px', border: isOver ? '2px dashed var(--gray)' : 'none' }}>
-            <AlertCircle size={32} color="var(--gray)" strokeWidth={1} />
-            <p style={{ fontSize: '11px', color: 'var(--gray)', marginTop: '8px', letterSpacing: '0.08em', textAlign: 'center' }}>EMPTY — DROP HERE</p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, border: isOver ? '2px dashed var(--val-gray)' : 'none' }}>
+            <AlertCircle size={40} color="var(--val-gray)" strokeWidth={1.5} />
+            <p style={{ fontFamily: 'Rajdhani', fontSize: '16px', fontWeight: 600, color: 'var(--val-gray)', marginTop: '8px', letterSpacing: '0.05em' }}>DROP TARGET</p>
           </div>
         ) : (
           <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
@@ -101,12 +102,10 @@ export default function ProjectDetail() {
   const [defStatus, setDefStatus]  = useState('todo')
   const [activeTask, setActiveTask] = useState(null)
   
-  // Confirmation states
   const [confirmTaskOpen, setConfirmTaskOpen] = useState(false)
   const [confirmProjOpen, setConfirmProjOpen] = useState(false)
   const [pendingTaskId, setPendingTaskId] = useState(null)
   
-  // Filtering state
   const [statusFilter, setStatusFilter] = useState('all')
   const [assigneeFilter, setAssigneeFilter] = useState('all')
 
@@ -152,7 +151,7 @@ export default function ProjectDetail() {
   async function confirmDeleteProject() {
     setConfirmProjOpen(false)
     const r = await deleteProject(id)
-    if (r.success) { toast.success('Project deleted'); navigate('/') }
+    if (r.success) { toast.success('Protocol terminated'); navigate('/') }
   }
 
   async function handleDragEnd({ active, over }) {
@@ -161,30 +160,22 @@ export default function ProjectDetail() {
 
     const activeId = active.id
     const overId = over.id
-
     const activeTask = tasks.find(t => t.id === activeId)
     if (!activeTask) return
 
-    // Find destination container
     let overContainerId = null
     const droppedOnTask = tasks.find(t => t.id === overId)
     
-    if (droppedOnTask) {
-      overContainerId = droppedOnTask.status
-    } else {
-      // It might be the column ID itself
-      overContainerId = COLS.find(c => c.id === overId)?.id
-    }
+    if (droppedOnTask) { overContainerId = droppedOnTask.status } 
+    else { overContainerId = COLS.find(c => c.id === overId)?.id }
 
     if (!overContainerId) return
 
-    // If container changed
     if (overContainerId !== activeTask.status) {
       await updateTask(activeId, { status: overContainerId })
       return
     }
 
-    // If sorting within same container
     if (activeId !== overId) {
       const oldIndex = tasks.findIndex(t => t.id === activeId)
       const newIndex = tasks.findIndex(t => t.id === overId)
@@ -196,27 +187,25 @@ export default function ProjectDetail() {
   const allDone  = tasks.length > 0 && tasks.every(t => t.status === 'done')
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--cream)', backgroundImage: 'radial-gradient(rgba(28,20,34,0.1) 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--val-bg)' }}>
       <Navbar projectName={currentProject?.name} />
 
-      {/* Toolbar */}
-      <div className="retro-toolbar" style={{ marginTop: '28px' }}>
-        <Link to="/" className="retro-toolbar-btn">
-          <Home size={14} /> DASHBOARD
+      <div style={{ background: 'var(--val-light)', borderBottom: '2px solid var(--val-bg-alt)', padding: '12px clamp(16px, 4vw, 40px)', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+        <Link to="/" style={{ color: 'var(--val-gray)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Anton', fontSize: '16px' }}>
+          <Home size={16} /> DASHBOARD
         </Link>
-        <div style={{ width: '1px', height: '18px', background: 'var(--dark)', margin: '0 4px' }} />
-        <button onClick={() => openAdd()} className="retro-toolbar-btn">
-          <Plus size={14} /> ADD TASK
+        <div style={{ width: '2px', height: '16px', background: 'var(--val-bg-alt)' }} />
+        <button onClick={() => openAdd()} style={{ background: 'transparent', border: 'none', color: 'var(--val-dark)', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Anton', fontSize: '16px', cursor: 'pointer' }}>
+          <Plus size={16} /> ADD TASK
         </button>
         
-        {/* Filter dropdowns */}
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'var(--cream-dark)', padding: '2px 8px', border: '1px solid var(--dark)' }}>
-            <Filter size={12} />
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--val-bg)', padding: '6px 12px', border: '2px solid var(--val-bg-alt)' }}>
+            <Filter size={14} color="var(--val-gray)" />
             <select 
               value={statusFilter} 
               onChange={e => setStatusFilter(e.target.value)}
-              style={{ background: 'none', border: 'none', fontSize: '11px', fontWeight: 700, outline: 'none' }}
+              style={{ background: 'none', border: 'none', fontFamily: 'Rajdhani', fontWeight: 700, fontSize: '14px', outline: 'none', color: 'var(--val-dark)' }}
             >
               <option value="all">ALL STATUS</option>
               <option value="todo">TODO</option>
@@ -225,39 +214,38 @@ export default function ProjectDetail() {
             </select>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', background: 'var(--cream-dark)', padding: '2px 8px', border: '1px solid var(--dark)' }}>
-            <User size={12} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--val-bg)', padding: '6px 12px', border: '2px solid var(--val-bg-alt)' }}>
+            <User size={14} color="var(--val-gray)" />
             <select 
               value={assigneeFilter} 
               onChange={e => setAssigneeFilter(e.target.value)}
-              style={{ background: 'none', border: 'none', fontSize: '11px', fontWeight: 700, outline: 'none', textTransform: 'uppercase' }}
+              style={{ background: 'none', border: 'none', fontFamily: 'Rajdhani', fontWeight: 700, fontSize: '14px', outline: 'none', color: 'var(--val-dark)', textTransform: 'uppercase' }}
             >
               <option value="all">ALL ASSIGNEES</option>
               {assignees.filter(a => a !== 'all').map(a => (
-                <option key={a} value={a}>{a.toUpperCase()}</option>
+                <option key={a} value={a}>{a}</option>
               ))}
             </select>
           </div>
 
-          <button onClick={handleDeleteProject} className="retro-toolbar-btn" style={{ color: 'var(--pink)', fontWeight: 700 }}>
-            <Trash2 size={14} /> DELETE
+          <button onClick={handleDeleteProject} style={{ color: 'var(--val-red)', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Anton', fontSize: '16px', cursor: 'pointer' }}>
+            <Trash2 size={16} /> TERMINATE PROTOCOL
           </button>
         </div>
       </div>
 
-      <main style={{ padding: '20px 20px 50px' }}>
-        {/* Project heading */}
-        <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <main style={{ padding: 'clamp(20px, 4vw, 40px)', maxWidth: '1400px', margin: '0 auto' }}>
+        <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
           {isLoadingProject ? (
-            <div className="skeleton" style={{ height: '48px', width: '280px' }} />
+            <div style={{ height: '48px', width: '280px', background: 'var(--val-bg-alt)' }} />
           ) : (
             <div>
-              <h1 style={{ fontFamily: 'VT323', fontSize: '48px', letterSpacing: '0.04em', lineHeight: 1, color: 'var(--dark)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Layout size={32} /> {currentProject?.name?.toUpperCase() || '...'}
+              <h1 style={{ fontFamily: 'Anton', fontSize: 'clamp(36px, 8vw, 64px)', letterSpacing: '0.02em', lineHeight: 1, color: 'var(--val-dark)', display: 'flex', alignItems: 'center', gap: '16px', margin: 0, flexWrap: 'wrap' }}>
+                {currentProject?.name?.toUpperCase() || '...'}
               </h1>
               {currentProject?.description && (
-                <p style={{ fontSize: '12px', lineHeight: 1.6, color: 'var(--dark)', opacity: 0.7, marginTop: '8px', maxWidth: '600px' }}>
-                  &gt; {currentProject.description}
+                <p style={{ fontFamily: 'Rajdhani', fontSize: '18px', fontWeight: 600, color: 'var(--val-gray)', marginTop: '8px', maxWidth: '600px' }}>
+                  {currentProject.description}
                 </p>
               )}
             </div>
@@ -265,17 +253,15 @@ export default function ProjectDetail() {
 
           {allDone && (
             <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', background: 'var(--green)', border: '2px solid var(--dark)', boxShadow: '3px 3px 0 var(--dark)' }}
+              initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+              style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 24px', background: 'var(--val-red)', color: 'white', clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%)' }}
             >
-              <CheckCircle2 size={24} color="white" />
-              <span style={{ fontFamily: 'VT323', fontSize: '24px', color: 'white' }}>PROJECT COMPLETE</span>
+              <CheckCircle2 size={28} color="white" />
+              <span style={{ fontFamily: 'Anton', fontSize: 'clamp(20px, 5vw, 28px)', letterSpacing: '0.05em' }}>MISSION ACCOMPLISHED</span>
             </motion.div>
           )}
         </div>
 
-        {/* Kanban */}
         <DndContext
           sensors={sensors}
           collisionDetection={rectIntersection}
@@ -283,10 +269,10 @@ export default function ProjectDetail() {
           onDragEnd={handleDragEnd}
         >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            style={{ display: 'flex', gap: '20px', overflowX: 'auto', paddingBottom: '20px', alignItems: 'flex-start' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            style={{ display: 'flex', gap: '24px', overflowX: 'auto', paddingBottom: '40px', alignItems: 'flex-start' }}
           >
             {COLS.map(col => (
               <Column
@@ -303,29 +289,13 @@ export default function ProjectDetail() {
 
           <DragOverlay>
             {activeTask && (
-              <div style={{ transform: 'rotate(2deg)', opacity: 0.9 }}>
+              <div style={{ opacity: 0.9 }}>
                 <TaskCard task={activeTask} />
               </div>
             )}
           </DragOverlay>
         </DndContext>
       </main>
-
-      {/* Status bar */}
-      <div className="retro-statusbar">
-        <div className="retro-statusbar-segment">
-          <Clock size={12} /> {isLoadingProject ? 'SYNCING...' : 'ONLINE'}
-        </div>
-        <div className="retro-statusbar-segment">
-           {filteredTasks.length} {filteredTasks.length === 1 ? 'TASK' : 'TASKS'} SHOWN
-        </div>
-        <div className="retro-statusbar-segment">
-          <CheckCircle2 size={12} /> {tasks.filter(t => t.status === 'done').length}/{tasks.length} COMPLETE
-        </div>
-        <span style={{ marginLeft: 'auto', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Layout size={12} /> TASKFLOW v1.0.4
-        </span>
-      </div>
 
       <TaskModal
         isOpen={modalOpen}
@@ -339,18 +309,17 @@ export default function ProjectDetail() {
         isOpen={confirmTaskOpen}
         onClose={() => { setConfirmTaskOpen(false); setPendingTaskId(null) }}
         onConfirm={confirmDeleteTask}
-        title="Delete Task?"
-        message="Are you sure you want to delete this task? This action cannot be undone."
+        title="DELETE TASK?"
+        message="ARE YOU SURE YOU WANT TO TERMINATE THIS TASK? THIS ACTION CANNOT BE UNDONE."
       />
 
       <RetroConfirmModal
         isOpen={confirmProjOpen}
         onClose={() => setConfirmProjOpen(false)}
         onConfirm={confirmDeleteProject}
-        title="Delete Entire Project?"
-        message="Are you sure you want to delete this entire project and all its tasks? This action cannot be undone."
+        title="TERMINATE ENTIRE PROTOCOL?"
+        message="ARE YOU SURE YOU WANT TO DESTROY THIS OVERALL PROJECT AND ALL ATTACHED TASKS? THIS DATA WILL BE PURGED."
       />
     </div>
   )
 }
-
