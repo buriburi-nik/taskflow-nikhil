@@ -38,8 +38,8 @@ The project is designed to run with zero manual configuration.
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/taskflow-retro
-   cd taskflow-retro
+   git clone https://github.com/buriburi-nik/taskflow-nikhil
+   cd taskflow-nikhil
    ```
 
 2. **Install dependencies**:
@@ -88,4 +88,3 @@ I avoided standard component libraries to create a truly unique aesthetic. All c
 
 ---
 
-*Built with nostalgia and ❤️ for Advanced Agentic Coding.*
