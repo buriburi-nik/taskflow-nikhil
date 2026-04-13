@@ -40,6 +40,7 @@ export default function TaskCard({ task, onEdit, onDelete }) {
           transform: isDragging ? 'rotate(2.5deg)' : 'none',
           cursor: 'grab',
           position: 'relative',
+          touchAction: 'none',
         }}
         {...attributes}
         {...listeners}

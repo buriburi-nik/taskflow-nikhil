@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  DndContext, DragOverlay, PointerSensor, useSensor, useSensors, rectIntersection, useDroppable
+  DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, rectIntersection, useDroppable
 } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import toast from 'react-hot-toast'
@@ -16,6 +16,7 @@ import Navbar from '../components/Navbar.jsx'
 import TaskCard from '../components/TaskCard.jsx'
 import TaskModal from '../components/TaskModal.jsx'
 import { SkeletonTaskCard } from '../components/Loader.jsx'
+import RetroConfirmModal from '../components/RetroConfirmModal.jsx'
 
 const COLS = [
   { id: 'todo',        label: 'TODO',        bg: 'var(--cream-dark)',  fg: 'var(--dark)' },
@@ -100,11 +101,19 @@ export default function ProjectDetail() {
   const [defStatus, setDefStatus]  = useState('todo')
   const [activeTask, setActiveTask] = useState(null)
   
+  // Confirmation states
+  const [confirmTaskOpen, setConfirmTaskOpen] = useState(false)
+  const [confirmProjOpen, setConfirmProjOpen] = useState(false)
+  const [pendingTaskId, setPendingTaskId] = useState(null)
+  
   // Filtering state
   const [statusFilter, setStatusFilter] = useState('all')
   const [assigneeFilter, setAssigneeFilter] = useState('all')
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } })
+  )
 
   useEffect(() => { fetchProject(id) }, [id, fetchProject])
 
@@ -125,12 +134,23 @@ export default function ProjectDetail() {
   function openEdit(task)           { setEditTask(task); setModalOpen(true) }
 
   async function handleDelete(taskId) {
-    if (!window.confirm('Delete this task?')) return
-    await deleteTask(taskId)
+    setPendingTaskId(taskId)
+    setConfirmTaskOpen(true)
+  }
+
+  async function confirmDeleteTask() {
+    if (!pendingTaskId) return
+    await deleteTask(pendingTaskId)
+    setPendingTaskId(null)
+    setConfirmTaskOpen(false)
   }
 
   async function handleDeleteProject() {
-    if (!window.confirm('Delete this entire project?')) return
+    setConfirmProjOpen(true)
+  }
+
+  async function confirmDeleteProject() {
+    setConfirmProjOpen(false)
     const r = await deleteProject(id)
     if (r.success) { toast.success('Project deleted'); navigate('/') }
   }
@@ -313,6 +333,22 @@ export default function ProjectDetail() {
         task={editTask}
         projectId={id}
         defaultStatus={defStatus}
+      />
+
+      <RetroConfirmModal
+        isOpen={confirmTaskOpen}
+        onClose={() => { setConfirmTaskOpen(false); setPendingTaskId(null) }}
+        onConfirm={confirmDeleteTask}
+        title="Delete Task?"
+        message="Are you sure you want to delete this task? This action cannot be undone."
+      />
+
+      <RetroConfirmModal
+        isOpen={confirmProjOpen}
+        onClose={() => setConfirmProjOpen(false)}
+        onConfirm={confirmDeleteProject}
+        title="Delete Entire Project?"
+        message="Are you sure you want to delete this entire project and all its tasks? This action cannot be undone."
       />
     </div>
   )

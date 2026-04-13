@@ -10,6 +10,7 @@ import useAuthStore from '../store/authStore.js'
 import Navbar from '../components/Navbar.jsx'
 import ProjectCard from '../components/ProjectCard.jsx'
 import { SkeletonCard } from '../components/Loader.jsx'
+import RetroConfirmModal from '../components/RetroConfirmModal.jsx'
 
 
 function CreateModal({ isOpen, onClose, onCreate }) {
@@ -125,6 +126,8 @@ export default function Dashboard() {
   const { user } = useAuthStore()
   const { projects, fetchProjects, createProject, deleteProject, isLoadingProjects } = useProjectStore()
   const [modalOpen, setModalOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [pendingDeleteId, setPendingDeleteId] = useState(null)
 
   useEffect(() => {
     if (user?.id) fetchProjects(user.id)
@@ -135,7 +138,16 @@ export default function Dashboard() {
   }
 
   async function handleDelete(id) {
-    if (!window.confirm('Delete this project and all its tasks?')) return
+    setPendingDeleteId(id)
+    setConfirmOpen(true)
+  }
+
+  async function confirmDelete() {
+    if (!pendingDeleteId) return
+    const id = pendingDeleteId
+    setPendingDeleteId(null)
+    setConfirmOpen(false)
+    
     const r = await deleteProject(id)
     if (r.success) toast.success('Project deleted')
   }
@@ -235,6 +247,14 @@ export default function Dashboard() {
       </div>
 
       <CreateModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onCreate={handleCreate} />
+      
+      <RetroConfirmModal
+        isOpen={confirmOpen}
+        onClose={() => { setConfirmOpen(false); setPendingDeleteId(null) }}
+        onConfirm={confirmDelete}
+        title="Delete Project?"
+        message="Are you sure you want to delete this project and all its tasks? This action cannot be undone."
+      />
     </div>
   )
 }
