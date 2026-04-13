@@ -111,14 +111,14 @@ export default function Login() {
                 className="btn-retro btn-retro-purple"
                 style={{ marginTop: '6px', width: '100%', justifyContent: 'center', fontSize: '14px', position: 'relative' }}
               >
-                 {isLoading ? '[ LOADING... ]' : '[ SIGN IN ]'}
+                {isLoading ? '[ LOADING... ]' : '[ SIGN IN ]'}
               </button>
             </form>
 
-            {/* Demo credentials */}
+
             <button
-               type="button"
-               onClick={fillDemo}
+              type="button"
+              onClick={fillDemo}
               style={{
                 width: '100%',
                 marginTop: '20px',
