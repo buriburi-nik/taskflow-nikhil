@@ -1,0 +1,519 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design tokens ───────────────────────────────────────────────────────── */
+:root {
+  /* LIGHT THEME (Default) */
+  --cream:        #f5efcb;
+  --cream-dark:   #ede5b0;
+  --purple:       #7b35a8;
+  --purple-dark:  #5a2080;
+  --pink:         #e8479e;
+  --green:        #7fc241;
+  --green-dark:   #5a9430;
+  --yellow:       #f4c430;
+  --dark:         #1c1422;
+  --gray:         #c8c0a8;
+  --white:        #fffdf0;
+  --border-color: var(--dark);
+  --border:       2px solid var(--border-color);
+  --shadow:       4px 4px 0 var(--dark);
+  --shadow-sm:    3px 3px 0 var(--dark);
+  --shadow-xs:    2px 2px 0 var(--dark);
+  --grid-color:   rgba(28, 20, 34, 0.1);
+}
+
+.dark {
+  /* DARK THEME (Terminal / Cyberpunk) */
+  --cream:        #0d0d12;
+  --cream-dark:   #161621;
+  --purple:       #9d4edd;
+  --purple-dark:  #7b2cbf;
+  --pink:         #ff006e;
+  --green:        #3a86ff;
+  --green-dark:   #1e6091;
+  --yellow:       #fb5607;
+  --dark:         #f5efcb; /* Invert light color for text/borders */
+  --gray:         #4a4e69;
+  --white:        #1c1422;
+  --border-color: #f5efcb;
+  --grid-color:   rgba(245, 239, 203, 0.05);
+  --shadow:       4px 4px 0 rgba(245, 239, 203, 0.3);
+  --shadow-sm:    3px 3px 0 rgba(245, 239, 203, 0.3);
+  --shadow-xs:    2px 2px 0 rgba(245, 239, 203, 0.3);
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: auto; }
+
+  body {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 13px;
+    background-color: var(--cream);
+    /* Subtle dot grid — like graph paper */
+    background-image: radial-gradient(var(--grid-color) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    color: var(--dark);
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'VT323', 'Space Mono', monospace;
+    font-weight: normal;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  /* Old-school thick scrollbar */
+  ::-webkit-scrollbar { width: 14px; height: 14px; }
+  ::-webkit-scrollbar-track {
+    background: var(--cream);
+    border-left: var(--border);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--purple);
+    border: 2px solid var(--dark);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--pink); }
+  ::-webkit-scrollbar-corner { background: var(--cream); }
+
+  ::selection { background: var(--yellow); color: var(--dark); }
+}
+
+/* ─── Component classes ───────────────────────────────────────────────────── */
+@layer components {
+
+  /* ── Retro window chrome ──────────────────────────────────────────────── */
+
+  .retro-window {
+    border: var(--border);
+    background: var(--white);
+    box-shadow: var(--shadow);
+  }
+
+  .retro-window-bar {
+    background: var(--purple);
+    color: white;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  .retro-window-dots {
+    display: flex;
+    gap: 4px;
+    margin-right: 4px;
+  }
+  .retro-window-dots span {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+  }
+
+  /* ── Inputs ──────────────────────────────────────────────────────────── */
+
+  .retro-input {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--white);
+    border: var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--dark);
+    outline: none;
+    display: block;
+    transition: background 0.1s;
+  }
+
+  .retro-input:focus {
+    background: var(--yellow);
+    border-color: var(--purple);
+    box-shadow: inset 0 0 0 1px var(--purple);
+  }
+
+  .retro-input.error {
+    border-color: var(--pink);
+    background: rgba(232, 71, 158, 0.08);
+  }
+
+  /* ── Buttons ─────────────────────────────────────────────────────────── */
+
+  /* Primary — pink with press effect */
+  .btn-retro {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: var(--pink);
+    color: var(--dark);
+    border: var(--border);
+    box-shadow: var(--shadow-sm);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.08s, box-shadow 0.08s;
+    white-space: nowrap;
+  }
+
+  .btn-retro:hover {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 var(--dark);
+  }
+
+  .btn-retro:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--dark);
+  }
+
+  .btn-retro:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Green variant */
+  .btn-retro-green {
+    background: var(--green);
+  }
+
+  /* Purple variant */
+  .btn-retro-purple {
+    background: var(--purple);
+    color: white;
+  }
+
+  /* Ghost / secondary */
+  .btn-retro-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--cream);
+    color: var(--dark);
+    border: var(--border);
+    box-shadow: var(--shadow-xs);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+
+  .btn-retro-ghost:hover {
+    background: var(--yellow);
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--dark);
+  }
+
+  .btn-retro-ghost:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--dark);
+  }
+
+  /* ── Menu bar (top of app) ─────────────────────────────────────────── */
+
+  .retro-menubar {
+    background: var(--purple);
+    border-bottom: var(--border);
+    display: flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 4px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  .retro-menubar-item {
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .retro-menubar-item:hover, .retro-menubar-item.active {
+    background: var(--pink);
+    color: var(--dark);
+  }
+
+  /* ── Status bar ─────────────────────────────────────────────────────── */
+
+  .retro-statusbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 22px;
+    background: var(--gray);
+    border-top: var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 16px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    z-index: 100;
+  }
+
+  .retro-statusbar-segment {
+    padding: 0 8px;
+    border: 1px solid rgba(28, 20, 34, 0.3);
+    height: 16px;
+    display: flex;
+    align-items: center;
+    background: var(--cream);
+  }
+
+  /* ── Cards ─────────────────────────────────────────────────────────── */
+
+  .retro-card {
+    border: var(--border);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+
+  .retro-card:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--dark);
+  }
+
+  /* ── Badge ──────────────────────────────────────────────────────────── */
+
+  .retro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid var(--dark);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .badge-low    { background: var(--green);  color: var(--dark); }
+  .badge-medium { background: var(--yellow); color: var(--dark); }
+  .badge-high   { background: var(--pink);   color: var(--dark); }
+
+  /* ── Toolbar ─────────────────────────────────────────────────────────── */
+
+  .retro-toolbar {
+    background: var(--cream-dark);
+    border-bottom: var(--border);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .retro-toolbar-btn {
+    padding: 3px 8px;
+    background: var(--cream);
+    border: 1px solid var(--dark);
+    box-shadow: 1px 1px 0 var(--dark);
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    cursor: pointer;
+    transition: transform 0.08s, box-shadow 0.08s;
+  }
+
+  .retro-toolbar-btn:hover {
+    background: var(--yellow);
+    transform: translate(1px, 1px);
+    box-shadow: 0 0;
+  }
+
+  /* ── Kanban column ──────────────────────────────────────────────────── */
+
+  .retro-col {
+    border: var(--border);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    min-height: 480px;
+    min-width: 280px;
+    flex: 1;
+  }
+
+  .retro-col-header {
+    padding: 8px 12px;
+    border-bottom: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* ── Skeleton loading ───────────────────────────────────────────────── */
+
+  .skeleton {
+    background: repeating-linear-gradient(
+      90deg,
+      var(--gray) 0px,
+      var(--cream-dark) 24px,
+      var(--gray) 48px
+    );
+    background-size: 200px 100%;
+    animation: skshimmer 1.2s infinite linear;
+  }
+
+  /* ── Kbd / inline tag ──────────────────────────────────────────────── */
+
+  .retro-kbd {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 1px 5px;
+    background: var(--purple);
+    color: white;
+    border: 1px solid var(--dark);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Label ─────────────────────────────────────────────────────────── */
+
+  .retro-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+
+  /* ── Error note ─────────────────────────────────────────────────────── */
+
+  .retro-error {
+    padding: 8px 12px;
+    background: var(--pink);
+    border: var(--border);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── Divider ────────────────────────────────────────────────────────── */
+
+  .retro-divider {
+    height: var(--border);
+    background: var(--dark);
+    margin: 12px 0;
+  }
+
+  /* ── cmd-overlay ────────────────────────────────────────────────────── */
+
+  .cmd-overlay {
+    background: rgba(28, 20, 34, 0.7);
+  }
+}
+
+/* ─── Responsive Utilities ───────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+
+  .retro-toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px;
+  }
+
+  .retro-toolbar-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  main {
+    padding: 12px !important;
+  }
+
+  h1 {
+    font-size: 36px !important;
+  }
+
+  .retro-statusbar {
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* ─── Animations ──────────────────────────────────────────────────────────── */
+
+@keyframes skshimmer {
+  0%   { background-position: -200px 0; }
+  100% { background-position:  200px 0; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes scanline {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Blinking cursor — classic terminal */
+.cursor-blink::after {
+  content: '█';
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+  color: var(--purple);
+}
+
+/* CRT scanline overlay — optional decorative */
+.crt-scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  z-index: 9999;
+}
+
